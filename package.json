@@ -1,0 +1,62 @@
+{
+  "name": "@pabra/sortby",
+  "version": "0.1.0",
+  "description": "Provide typesafe function to be passed to Array.prototype.sort() to sort an Array of Objects by multiple keys.",
+  "sideEffects": false,
+  "main": "dist/cjs/index.js",
+  "module": "dist/esm/index.js",
+  "types": "dist/esm/index.d.ts",
+  "files": ["dist"],
+  "scripts": {
+    "clean:coverage": "rimraf coverage/*",
+    "clean:build": "rimraf dist/*",
+    "clean:build:cjs": "rimraf dist/cjs/*",
+    "clean:build:esm": "rimraf dist/esm/*",
+    "format": "prettier --write \"{src,__tests__}/**/*.{js,ts,jsx,tsx,json,html,css,scss,yml,yaml}\"",
+    "format:check": "prettier --check \"{src,__tests__}/**/*.{js,ts,jsx,tsx,json,html,css,scss,yml,yaml}\"",
+    "lint": "eslint \"{src,__tests__}/**/*.{js,ts,jsx,tsx}\"",
+    "test": "jest",
+    "test:debug": "node --inspect node_modules/.bin/jest --runInBand",
+    "pretest:coverage": "npm run clean:coverage",
+    "test:coverage": "jest --coverage",
+    "test:after-commit": "run-p format:check lint test:coverage build:check",
+    "test:before-publish": "run-p format:check lint test build",
+    "prebuild:cjs": "npm run clean:build:cjs",
+    "build:cjs": "tsc -p tsconfig.cjs.json",
+    "prebuild:esm": "npm run clean:build:esm",
+    "build:esm": "tsc -p tsconfig.esm.json",
+    "build:check": "tsc",
+    "build": "run-p build:cjs build:esm"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pabra/sortby.git"
+  },
+  "keywords": ["sortby", "sort", "typesafe", "typescript", "browser", "nodejs"],
+  "author": "Patrick Braune <pabra@netzfruech.de>",
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "bugs": {
+    "url": "https://github.com/pabra/sortby/issues"
+  },
+  "homepage": "https://github.com/pabra/sortby#readme",
+  "devDependencies": {
+    "@types/jest": "^26.0.14",
+    "@typescript-eslint/eslint-plugin": "^4.4.0",
+    "@typescript-eslint/parser": "^4.4.0",
+    "eslint": "^7.11.0",
+    "eslint-config-prettier": "^6.12.0",
+    "eslint-plugin-import": "^2.22.1",
+    "eslint-plugin-jest": "^24.1.0",
+    "eslint-plugin-prettier": "^3.1.4",
+    "jest": "^26.5.3",
+    "npm-run-all": "^4.1.5",
+    "prettier": "^2.1.2",
+    "prettier-plugin-organize-imports": "^1.1.1",
+    "rimraf": "^3.0.2",
+    "ts-jest": "^26.4.1",
+    "typescript": "^4.0.3"
+  }
+}
