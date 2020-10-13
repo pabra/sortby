@@ -1,12 +1,14 @@
 {
   "name": "@pabra/sortby",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Provide typesafe function to be passed to Array.prototype.sort() to sort an Array of Objects by multiple keys.",
   "sideEffects": false,
   "main": "dist/cjs/index.js",
   "module": "dist/esm/index.js",
   "types": "dist/esm/index.d.ts",
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "clean:coverage": "rimraf coverage/*",
     "clean:build": "rimraf dist/*",
@@ -32,7 +34,14 @@
     "type": "git",
     "url": "git+https://github.com/pabra/sortby.git"
   },
-  "keywords": ["sortby", "sort", "typesafe", "typescript", "browser", "nodejs"],
+  "keywords": [
+    "sortby",
+    "sort",
+    "typesafe",
+    "typescript",
+    "browser",
+    "nodejs"
+  ],
   "author": "Patrick Braune <pabra@netzfruech.de>",
   "license": "MIT",
   "publishConfig": {
