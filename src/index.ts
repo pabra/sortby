@@ -1,7 +1,8 @@
 type AnyRecord = Record<string, any>;
 type Comparison = typeof greater | typeof lower | typeof equal;
 type Direction = 'asc' | 'desc';
-type KeyDirectionTuple<T extends AnyRecord> = [keyof T, Direction];
+type KeyOrExtractor<T extends AnyRecord> = ((thing: T) => any) | keyof T;
+type KeyDirectionTuple<T extends AnyRecord> = [KeyOrExtractor<T>, Direction];
 
 const lower = -1;
 const greater = 1;
@@ -30,20 +31,25 @@ function compareDesc(left: any, right: any): Comparison {
 }
 
 export function by<T extends AnyRecord>(
-  ...keys: Readonly<(KeyDirectionTuple<T> | keyof T)[]>
+  ...keys: Readonly<(KeyDirectionTuple<T> | KeyOrExtractor<T>)[]>
 ): (left: Readonly<T>, right: Readonly<T>) => Comparison {
   const chain = keys.map(entry => {
-    const [key, direction] = Array.isArray(entry)
+    const [keyOrExtractor, direction] = Array.isArray(entry)
       ? entry
       : [entry, 'asc' as const];
 
-    return [key, direction === 'asc' ? compareAsc : compareDesc] as const;
+    const extractor =
+      typeof keyOrExtractor === 'function'
+        ? keyOrExtractor
+        : (thing: T) => thing[keyOrExtractor];
+
+    return [extractor, direction === 'asc' ? compareAsc : compareDesc] as const;
   });
 
   return (left: Readonly<T>, right: Readonly<T>) => {
     for (let i = 0, l = chain.length; i < l; i++) {
-      const [key, cmp] = chain[i];
-      const result = cmp(left[key], right[key]);
+      const [extractor, cmp] = chain[i];
+      const result = cmp(extractor(left), extractor(right));
 
       if (result !== equal) {
         return result;

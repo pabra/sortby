@@ -118,3 +118,23 @@ describe('sort by age first', () => {
     expect(result).toEqual(expectation);
   });
 });
+
+describe('extractor', () => {
+  test('sort by last reversed name asc, age asc', () => {
+    const data = [...list];
+    const expectation = [3, 0, 1, 2].map(i => data[i]);
+    const result = data.sort(
+      by(x => x.name.split('').reverse().join(''), 'age'),
+    );
+    expect(result).toEqual(expectation);
+  });
+
+  test('sort by last reversed name desc, age asc', () => {
+    const data = [...list];
+    const expectation = [2, 1, 3, 0].map(i => data[i]);
+    const result = data.sort(
+      by([x => x.name.split('').reverse().join(''), 'desc'], 'age'),
+    );
+    expect(result).toEqual(expectation);
+  });
+});
