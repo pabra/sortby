@@ -1,6 +1,6 @@
 {
   "name": "@pabra/sortby",
-  "version": "0.1.2",
+  "version": "0.2.0",
   "description": "Provide typesafe function to be passed to Array.prototype.sort() to sort an Array of Objects by multiple keys.",
   "sideEffects": false,
   "main": "dist/cjs/index.js",
