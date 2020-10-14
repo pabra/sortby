@@ -1,35 +1,96 @@
-import { sortby } from '../src';
+import { by } from '../src';
 
-describe('sortby', () => {
-  const list = [
-    {
-      name: 'Alice',
-      age: 23,
-    },
-    {
-      name: 'Chloe',
-      age: 42,
-    },
-    {
-      name: 'Bob',
-      age: 21,
-    },
-  ];
+const list = [
+  {
+    name: 'Bob',
+    age: 23,
+  },
+  {
+    name: 'Alice',
+    age: 23,
+  },
+  {
+    name: 'Chloe',
+    age: 42,
+  },
+  {
+    name: 'Bob',
+    age: 21,
+  },
+];
 
-  test('sorting', () => {
-    expect(list.sort(sortby('age'))).toEqual([
-      {
-        name: 'Bob',
-        age: 21,
-      },
-      {
-        name: 'Alice',
-        age: 23,
-      },
-      {
-        name: 'Chloe',
-        age: 42,
-      },
-    ]);
+describe('sort by name first', () => {
+  test('sort by name asc', () => {
+    const data = [...list];
+    const expectation1 = [1, 3, 0, 2].map(i => data[i]);
+    const expectation2 = [1, 0, 3, 2].map(i => data[i]);
+    const result = data.sort(by('name'));
+    expect([expectation1, expectation2]).toContainEqual(result);
+  });
+
+  test('sort by name asc, age asc', () => {
+    const data = [...list];
+    const expectation = [1, 3, 0, 2].map(i => data[i]);
+    const result = data.sort(by('name', 'age'));
+    expect(result).toEqual(expectation);
+  });
+
+  test('sort by name asc, age desc', () => {
+    const data = [...list];
+    const expectation = [1, 0, 3, 2].map(i => data[i]);
+    const result = data.sort(by('name', ['age', 'desc']));
+    expect(result).toEqual(expectation);
+  });
+
+  test('sort by name desc, age asc', () => {
+    const data = [...list];
+    const expectation = [2, 3, 0, 1].map(i => data[i]);
+    const result = data.sort(by(['name', 'desc'], 'age'));
+    expect(result).toEqual(expectation);
+  });
+
+  test('sort by name desc, age desc', () => {
+    const data = [...list];
+    const expectation = [2, 0, 3, 1].map(i => data[i]);
+    const result = data.sort(by(['name', 'desc'], ['age', 'desc']));
+    expect(result).toEqual(expectation);
+  });
+});
+
+describe('sort by age first', () => {
+  test('sort by age asc', () => {
+    const data = [...list];
+    const expectation1 = [3, 0, 1, 2].map(i => data[i]);
+    const expectation2 = [3, 1, 0, 2].map(i => data[i]);
+    const result = data.sort(by('age'));
+    expect([expectation1, expectation2]).toContainEqual(result);
+  });
+
+  test('sort by age asc, name asc', () => {
+    const data = [...list];
+    const expectation = [3, 1, 0, 2].map(i => data[i]);
+    const result = data.sort(by('age', 'name'));
+    expect(result).toEqual(expectation);
+  });
+
+  test('sort by age asc, name desc', () => {
+    const data = [...list];
+    const expectation = [3, 0, 1, 2].map(i => data[i]);
+    const result = data.sort(by('age', ['name', 'desc']));
+    expect(result).toEqual(expectation);
+  });
+
+  test('sort by age desc, name asc', () => {
+    const data = [...list];
+    const expectation = [2, 1, 0, 3].map(i => data[i]);
+    const result = data.sort(by(['age', 'desc'], 'name'));
+    expect(result).toEqual(expectation);
+  });
+
+  test('sort by age desc, name desc', () => {
+    const data = [...list];
+    const expectation = [2, 0, 1, 3].map(i => data[i]);
+    const result = data.sort(by(['age', 'desc'], ['name', 'desc']));
+    expect(result).toEqual(expectation);
   });
 });
