@@ -57,6 +57,30 @@ describe('sort by name first', () => {
   });
 });
 
+describe('sort explicitly asc', () => {
+  test('sort by name explicitly asc', () => {
+    const data = [...list];
+    const expectation1 = [1, 3, 0, 2].map(i => data[i]);
+    const expectation2 = [1, 0, 3, 2].map(i => data[i]);
+    const result = data.sort(by(['name', 'asc']));
+    expect([expectation1, expectation2]).toContainEqual(result);
+  });
+
+  test('sort by name asc, age asc', () => {
+    const data = [...list];
+    const expectation = [1, 3, 0, 2].map(i => data[i]);
+    const result = data.sort(by(['name', 'asc'], ['age', 'asc']));
+    expect(result).toEqual(expectation);
+  });
+
+  test('sort by name asc, age desc', () => {
+    const data = [...list];
+    const expectation = [1, 0, 3, 2].map(i => data[i]);
+    const result = data.sort(by(['name', 'asc'], ['age', 'desc']));
+    expect(result).toEqual(expectation);
+  });
+});
+
 describe('sort by age first', () => {
   test('sort by age asc', () => {
     const data = [...list];
