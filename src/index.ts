@@ -1,7 +1,5 @@
 type AnyRecord = Record<string, any>;
-type Lower = typeof lower;
-type Greater = typeof greater;
-type Equal = typeof equal;
+type Comparison = typeof greater | typeof lower | typeof equal;
 type Direction = 'asc' | 'desc';
 type KeyDirectionTuple<T extends AnyRecord> = [keyof T, Direction];
 
@@ -9,56 +7,49 @@ const lower = -1;
 const greater = 1;
 const equal = 0;
 
-function isLower<T extends AnyRecord>(left: T, right: T): boolean {
+function isLower(left: any, right: any): boolean {
   return left < right;
 }
 
-function isGreater<T extends AnyRecord>(left: T, right: T): boolean {
+function isGreater(left: any, right: any): boolean {
   return left > right;
 }
 
-function compareAsc<T extends AnyRecord>(
-  left: T,
-  right: T,
-): Lower | Greater | undefined {
+function compareAsc(left: any, right: any): Comparison {
   // prettier-ignore
   return isLower(left, right) ? lower :
     isGreater(left, right) ? greater :
-    undefined;
+    equal;
 }
 
-function compareDesc<T extends AnyRecord>(
-  left: T,
-  right: T,
-): Lower | Greater | undefined {
+function compareDesc(left: any, right: any): Comparison {
   // prettier-ignore
   return isLower(left, right) ? greater :
     isGreater(left, right) ? lower :
-    undefined;
-}
-
-function compare<T extends AnyRecord>(
-  left: T,
-  right: T,
-  direction: Direction,
-): Lower | Greater | undefined {
-  return direction === 'asc'
-    ? compareAsc(left, right)
-    : compareDesc(left, right);
+    equal;
 }
 
 export function by<T extends AnyRecord>(
-  ...keys: (KeyDirectionTuple<T> | keyof T)[]
-): (left: T, right: T) => Lower | Greater | Equal {
-  return (left: T, right: T) => {
-    for (const entry of keys) {
-      const [key, direction] = Array.isArray(entry)
-        ? entry
-        : [entry, 'asc' as const];
+  ...keys: Readonly<(KeyDirectionTuple<T> | keyof T)[]>
+): (left: Readonly<T>, right: Readonly<T>) => Comparison {
+  const chain = keys.map(entry => {
+    const [key, direction] = Array.isArray(entry)
+      ? entry
+      : [entry, 'asc' as const];
 
-      const result = compare(left[key], right[key], direction);
-      if (result !== undefined) return result;
+    return [key, direction === 'asc' ? compareAsc : compareDesc] as const;
+  });
+
+  return (left: Readonly<T>, right: Readonly<T>) => {
+    for (let i = 0, l = chain.length; i < l; i++) {
+      const [key, cmp] = chain[i];
+      const result = cmp(left[key], right[key]);
+
+      if (result !== equal) {
+        return result;
+      }
     }
+
     return equal;
   };
 }
