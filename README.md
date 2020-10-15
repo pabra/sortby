@@ -162,7 +162,7 @@ const userSort: (
 
 This means, `userSort` will work on any object with keys "name" and "age". When
 you change the shape of your `User` type (eg. "name" => "firstName"), typescript
-will mark places where use pass `userSort` to sort functions instead of the
+will mark places where you pass `userSort` to sort functions instead of the
 place where you defined `userSort`.
 
 To show typescript that this filter function is supposed to work on `User`
@@ -188,7 +188,7 @@ before comparing, you can pass an extractor function instead of the key name.
 Let's assume you want to convert all user names to lower case before comping:
 
 ```typescript
-(by(user => user.name.toLowerCase(), 'age'))
+by(user => user.name.toLowerCase(), 'age')
 ```
 
 For descending order, wrap it in a tuple as above:
