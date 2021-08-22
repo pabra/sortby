@@ -25,9 +25,10 @@ module.exports = {
     // ts
     '@typescript-eslint/explicit-module-boundary-types': 2,
     '@typescript-eslint/no-non-null-asserted-optional-chain': 2,
+    '@typescript-eslint/no-shadow': 2,
 
     // js
-    'no-shadow': 2,
+    'no-shadow': 0,
     'import/no-unused-modules': [2, { unusedExports: true }],
     eqeqeq: 2,
   },
