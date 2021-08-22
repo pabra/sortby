@@ -1,12 +1,13 @@
 type AnyRecord = Record<string, any>;
-type Comparison = typeof greater | typeof lower | typeof equal;
 type Direction = 'asc' | 'desc';
-type KeyOrExtractor<T extends AnyRecord> = ((thing: T) => any) | keyof T;
+type KeyOrExtractor<T extends AnyRecord> = ((thing: T) => T[keyof T]) | keyof T;
 type KeyDirectionTuple<T extends AnyRecord> = [KeyOrExtractor<T>, Direction];
 
-const lower = -1;
-const greater = 1;
-const equal = 0;
+const enum Comparison {
+  lower = -1,
+  greater = 1,
+  equal = 0,
+}
 
 function isLower(left: any, right: any): boolean {
   return left < right;
@@ -18,16 +19,16 @@ function isGreater(left: any, right: any): boolean {
 
 function compareAsc(left: any, right: any): Comparison {
   // prettier-ignore
-  return isLower(left, right) ? lower :
-    isGreater(left, right) ? greater :
-    equal;
+  return isLower(left, right) ? Comparison.lower :
+    isGreater(left, right) ? Comparison.greater :
+    Comparison.equal;
 }
 
 function compareDesc(left: any, right: any): Comparison {
   // prettier-ignore
-  return isLower(left, right) ? greater :
-    isGreater(left, right) ? lower :
-    equal;
+  return isLower(left, right) ? Comparison.greater :
+    isGreater(left, right) ? Comparison.lower :
+    Comparison.equal;
 }
 
 export function by<T extends AnyRecord>(
@@ -41,21 +42,22 @@ export function by<T extends AnyRecord>(
     const extractor =
       typeof keyOrExtractor === 'function'
         ? keyOrExtractor
-        : (thing: T) => thing[keyOrExtractor];
+        : (thing: T) => thing[keyOrExtractor as keyof T];
 
     return [extractor, direction === 'asc' ? compareAsc : compareDesc] as const;
   });
 
   return (left: Readonly<T>, right: Readonly<T>) => {
     for (let i = 0, l = chain.length; i < l; i++) {
-      const [extractor, cmp] = chain[i];
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      const [extractor, cmp] = chain[i]!;
       const result = cmp(extractor(left), extractor(right));
 
-      if (result !== equal) {
+      if (result !== Comparison.equal) {
         return result;
       }
     }
 
-    return equal;
+    return Comparison.equal;
   };
 }
