@@ -18,7 +18,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [macos-latest, windows-latest, ubuntu-latest]
-        node: [10, 12, 14, 16]
+        node: [12, 14, 16]
 
     name: ${{ matrix.os }} Node ${{ matrix.node }} cache
 
@@ -27,23 +27,23 @@ jobs:
       NODE: ${{ matrix.node }}
 
     steps:
-      - if: ${{ matrix.os == 'ubuntu-latest' || matrix.node == 14 }}
-        uses: actions/checkout@v2
+      - if: ${{ matrix.os == 'ubuntu-latest' || matrix.node == 16 }}
+        uses: actions/checkout@v3
 
-      - if: ${{ matrix.os == 'ubuntu-latest' || matrix.node == 14 }}
-        uses: actions/setup-node@v2
+      - if: ${{ matrix.os == 'ubuntu-latest' || matrix.node == 16 }}
+        uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node }}
 
-      - if: ${{ matrix.os != 'windows-latest' && ( matrix.os == 'ubuntu-latest' || matrix.node == 14 ) }}
+      - if: ${{ matrix.os != 'windows-latest' && ( matrix.os == 'ubuntu-latest' || matrix.node == 16 ) }}
         name: Get npm cache directory
         id: npm-cache
         run: |
           echo "::set-output name=dir::$(npm config get cache)"
 
       # getting and storing cache takes about 1:20 min each on windows
-      - if: ${{ matrix.os != 'windows-latest' && ( matrix.os == 'ubuntu-latest' || matrix.node == 14 ) }}
-        uses: actions/cache@v2
+      - if: ${{ matrix.os != 'windows-latest' && ( matrix.os == 'ubuntu-latest' || matrix.node == 16 ) }}
+        uses: actions/cache@v3
         id: cache
         with:
           path: ${{ steps.npm-cache.outputs.dir }}
@@ -52,14 +52,14 @@ jobs:
             ${{ runner.os }}-node-${{ matrix.node }}-
             ${{ runner.os }}-node-
 
-      - if: ${{ matrix.os == 'ubuntu-latest' || matrix.node == 14 }}
+      - if: ${{ matrix.os == 'ubuntu-latest' || matrix.node == 16 }}
         run: npm ci
 
-      - if: ${{ matrix.os == 'ubuntu-latest' || matrix.node == 14 }}
+      - if: ${{ matrix.os == 'ubuntu-latest' || matrix.node == 16 }}
         run: npm run test:after-commit
 
-      - if: ${{ matrix.os == 'ubuntu-latest' || matrix.node == 14 }}
-        uses: codecov/codecov-action@v2
+      - if: ${{ matrix.os == 'ubuntu-latest' || matrix.node == 16 }}
+        uses: codecov/codecov-action@v3
         with:
           flags: unittests
           env_vars: OS,NODE
